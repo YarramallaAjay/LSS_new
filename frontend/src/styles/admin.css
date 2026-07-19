@@ -1,0 +1,350 @@
+body{
+    font-family: Arial, Helvetica, sans-serif;
+    background:#f5f6fa;
+    margin:0;
+}
+
+.admin-container {
+    display: flex;
+    min-height: 100vh;
+}
+
+/* SIDEBAR */
+.logo{
+    font-size:18px;
+    font-weight:bold;
+    margin-bottom:30px;
+    padding-bottom:15px;
+    border-bottom:1px solid rgba(255,255,255,0.2);
+}
+
+.logo span{
+    display:block;
+    font-size:13px;
+    color:#cbd5f5;
+    margin-top:3px;
+}
+
+.sidebar {
+    width: 230px;
+    background: #1e293b;
+    color: white;
+    padding: 20px;
+}
+
+.sidebar h2 {
+    margin-bottom: 30px;
+}
+
+.sidebar nav a {
+    display: block;
+    color: white;
+    text-decoration: none;
+    padding: 12px;
+    border-radius: 6px;
+    margin-bottom: 6px;
+}
+
+.sidebar nav a form button{
+	display: block;
+	color: white;
+    text-decoration: none;
+    padding: 12px;
+    
+    margin-bottom: 6px;
+    background-color: #1e293b;
+}
+
+
+.sidebar nav a:hover {
+    background: #334155;
+}
+
+.logout-form {
+    width: 100%;
+}
+
+.logout-btn {
+    all: unset;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+    width: 100%;
+    padding: 12px 18px;
+
+    color: white;
+    cursor: pointer;
+
+    font-size: 15px;
+}
+
+.logout-btn:hover {
+    background: rgba(255,255,255,0.1);
+}
+li{
+	list-style: none;
+}
+
+/* MAIN */
+.main-content {
+    flex: 1;
+}
+
+.topbar {
+    background: white;
+    padding: 15px 25px;
+    box-shadow: 0 2px 6px rgba(0,0,0,.08);
+}
+
+.topbar span{
+	display:block;
+    font-size:18px;
+    font-weight:600;
+    margin-top:3px;
+    color:black;
+}    
+    
+.page {
+    padding: 25px;
+}
+
+/* CARDS */
+.cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px,1fr));
+    gap: 20px;
+}
+
+.card {
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0,0,0,.08);
+}
+
+/* TABLE */
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+th, td {
+    padding: 12px;
+    border-bottom: 1px solid #ddd;
+}
+
+th {
+    background: #8B0000;
+    color: white;
+}
+
+.badge {
+    padding: 5px 10px;
+    border-radius: 5px;
+    color: black;
+}
+
+.ENABLED {
+    background: green;
+}
+
+.DISABLED {
+    background: red;
+}
+
+.badge.PLACED { background:#fde68a; }
+.badge.CONFIRMED { background:#bfdbfe; }
+.badge.SHIPPED { background:#bbf7d0; }
+.badge.DELIVERED { background:#ddd6fe; }
+
+
+tbody tr td a{
+	text-decoration: none;
+	color:black;
+	}
+	
+.status-badge {
+    font-size: 0.85rem;
+    padding: 6px 10px;
+    min-width: 90px;
+    display: inline-block;
+    text-align: center;
+}	
+	
+/*  -----------------   orders table              ----------------  */	
+	
+.orders-table {
+    width: 100%;
+    table-layout: fixed;
+}
+
+.orders-table th,
+.orders-table td {
+    padding: 12px 10px;
+    vertical-align: top;
+}
+
+.orders-table th {
+    white-space: nowrap;
+    font-size: 15px;
+}
+
+.orders-table td {
+    word-break: break-word;
+    font-size: 14px;
+}
+
+/* Balanced widths */
+.orders-table th:nth-child(1),
+.orders-table td:nth-child(1) { width: 70px; }   /* Order ID */
+
+.orders-table th:nth-child(2),
+.orders-table td:nth-child(2) { width: 130px; }  /* Customer */
+
+.orders-table th:nth-child(3),
+.orders-table td:nth-child(3) { width: 230px; }  /* Address */
+
+.orders-table th:nth-child(4),
+.orders-table td:nth-child(4) { width: 130px; }  /* State */
+
+.orders-table th:nth-child(5),
+.orders-table td:nth-child(5) { width: 150px; }  /* Ordered At */
+
+.orders-table th:nth-child(6),
+.orders-table td:nth-child(6) { width: 100px; }  /* Total */
+
+.orders-table th:nth-child(7),
+.orders-table td:nth-child(7) { width: 120px; }  /* Status */
+
+.orders-table th:nth-child(8),
+.orders-table td:nth-child(8) { width: 190px; }  /* Update Status */
+
+.orders-table th:nth-child(9),
+.orders-table td:nth-child(9) { width: 120px; }  /* Cancel Reason */
+
+
+
+.status-update-form {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.status-select {
+    flex: 1;
+    min-width: 0;
+    height: 38px;
+    padding: 6px 10px;
+    font-size: 14px;
+    border: 1px solid #ced4da;
+    border-radius: 6px;
+    background-color: #bdbdbd;
+}
+
+.status-update-btn {
+    width: 78px;
+    height: 38px;
+    border: none;
+    border-radius: 6px;
+    background-color: #0d6efd;
+    color: white;
+    font-size: 14px;
+    font-weight: 500;
+    white-space: nowrap;
+    cursor: pointer;
+}
+
+.status-update-btn:hover {
+    background-color: #0b5ed7;
+}
+
+/* ----------------- admin forms & misc widgets ----------------- */
+
+.filters-form {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.filters-form input,
+.filters-form select {
+    padding: 8px 10px;
+    border: 1px solid #ced4da;
+    border-radius: 6px;
+}
+
+.product-form {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    max-width: 560px;
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0,0,0,.08);
+}
+
+.product-form label {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    font-weight: 600;
+    font-size: 14px;
+}
+
+.product-form input[type="text"],
+.product-form input[type="number"],
+.product-form select,
+.product-form textarea {
+    padding: 8px 10px;
+    border: 1px solid #ced4da;
+    border-radius: 6px;
+    font-weight: normal;
+}
+
+.checkbox-label {
+    flex-direction: row !important;
+    align-items: center;
+    gap: 8px !important;
+}
+
+.field-error {
+    color: #dc3545;
+    font-size: 12px;
+    font-weight: normal;
+}
+
+.pagination {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-top: 16px;
+}
+
+.pagination button {
+    padding: 6px 14px;
+    border: 1px solid #ced4da;
+    border-radius: 6px;
+    background: white;
+    cursor: pointer;
+}
+
+.pagination button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.order-totals {
+    background: white;
+    padding: 16px 20px;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0,0,0,.08);
+    max-width: 320px;
+    margin: 16px 0;
+}
+
+.order-totals p {
+    margin: 4px 0;
+}

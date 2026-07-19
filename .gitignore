@@ -1,0 +1,8 @@
+# Root-level ignores for the combined project (docker-compose, etc).
+# backend/ and frontend/ each have their own .gitignore too.
+
+.env
+.env.*
+!.env.example
+
+.DS_Store

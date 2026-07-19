@@ -1,0 +1,39 @@
+import axios from "axios";
+
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:8080";
+
+// `withCredentials: true` is required so the JSESSIONID cookie the backend
+// sets for the guest shopping cart (CartService is @SessionScope) round
+// -trips on every request, even though the API and the SPA run on
+// different origins in dev (5173 vs 8080).
+const api = axios.create({
+  baseURL: `${API_BASE_URL}/api`,
+  withCredentials: true,
+});
+
+// Attach the admin JWT (if present) to every request. Public storefront
+// endpoints simply ignore the header; /api/admin/** requires it.
+api.interceptors.request.use((config) => {
+  const token = localStorage.getItem("adminToken");
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
+  return config;
+});
+
+// A 401 on an /admin/* call means the token is missing/expired - clear it
+// so ProtectedRoute bounces the user back to the login page instead of
+// silently failing every subsequent admin request.
+api.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error.response?.status === 401 && error.config?.url?.includes("/admin")) {
+      localStorage.removeItem("adminToken");
+      localStorage.removeItem("adminUsername");
+    }
+    return Promise.reject(error);
+  }
+);
+
+export default api;
+export { API_BASE_URL };
