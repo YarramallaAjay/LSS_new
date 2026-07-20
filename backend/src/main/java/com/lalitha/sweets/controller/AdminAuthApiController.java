@@ -44,8 +44,8 @@ public class AdminAuthApiController {
 		try {
 			authenticationManager.authenticate(
 					new UsernamePasswordAuthenticationToken(
-							request.getUsername(),
-							request.getPassword()
+							request.username(),
+							request.password()
 					)
 			);
 		} catch (BadCredentialsException ex) {
@@ -54,7 +54,7 @@ public class AdminAuthApiController {
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(error);
 		}
 
-		Admin admin = adminRepository.findByUsername(request.getUsername())
+		Admin admin = adminRepository.findByUsername(request.username())
 				.orElseThrow(() -> new BadCredentialsException("Invalid username or password"));
 
 		String token = jwtService.generateToken(admin.getUsername(), admin.getRole());

@@ -1,7 +1,6 @@
 package com.lalitha.sweets.security;
 
 import java.util.Date;
-import java.util.List;
 import java.util.function.Function;
 
 import javax.crypto.SecretKey;
@@ -88,7 +87,4 @@ public class JwtService {
 		return resolver.apply(claims);
 	}
 
-	public List<String> roleAsAuthorityList(String role) {
-		return List.of("ROLE_" + role);
-	}
 }

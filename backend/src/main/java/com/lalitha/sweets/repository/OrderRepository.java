@@ -24,18 +24,14 @@ public interface OrderRepository extends JpaRepository<Order, Long>{
 	@Query("SELECT COALESCE(SUM(o.totalAmount),0) FROM Order o")
 	Double totalRevenue();
 	
-	@Query("SELECT COALESCE(SUM(o.totalAmount),0) FROM Order o WHERE DATE(o.orderDate) = CURRENT_DATE")
+	@Query("SELECT COALESCE(SUM(o.totalAmount),0) FROM Order o WHERE CAST(o.orderDate AS LocalDate) = LOCAL DATE")
 	Double todayRevenue();
-	
+
 	@Query("SELECT COUNT(o) FROM Order o WHERE o.status = :status")
 	long countByStatus(@Param("status") OrderStatus status);
-	
-	@Query("SELECT COUNT(o) FROM Order o WHERE DATE(o.orderDate) = CURRENT_DATE")
+
+	@Query("SELECT COUNT(o) FROM Order o WHERE CAST(o.orderDate AS LocalDate) = LOCAL DATE")
 	long countTodayOrders();
-	
-	
-	@Query("SELECT MONTH(o.orderDate), COUNT(o) FROM Order o GROUP BY MONTH(o.orderDate)")
-	List<Object[]> getMonthlyOrders();
 	
 	
 	@Query("SELECT MONTH(o.orderDate), COUNT(o) FROM Order o GROUP BY MONTH(o.orderDate)")
@@ -55,8 +51,6 @@ public interface OrderRepository extends JpaRepository<Order, Long>{
 
 	//@Query("SELECT o FROM Order o ORDER BY o.id DESC")
 	List<Order> findTop5ByOrderByIdDesc();
-	
-	Page<Order> findAll(Pageable pageable);
 
 	List<Order> findAllByOrderByIdDesc();
 	

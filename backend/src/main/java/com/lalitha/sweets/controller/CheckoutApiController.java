@@ -169,21 +169,21 @@ public class CheckoutApiController {
         }
 
         Customer customer = customerRepository
-                .findByEmail(request.getEmail())
+                .findByEmail(request.email())
                 .orElse(new Customer());
 
-        String fullPhone = request.getPhone();
+        String fullPhone = request.phone();
 
         if (fullPhone != null && !fullPhone.startsWith("91")) {
             fullPhone = "91" + fullPhone;
         }
 
-        customer.setName(request.getName());
-        customer.setEmail(request.getEmail());
+        customer.setName(request.name());
+        customer.setEmail(request.email());
         customer.setPhone(fullPhone);
-        customer.setAddress(request.getAddress());
-        customer.setState(request.getState());
-        customer.setPincode(request.getPincode());
+        customer.setAddress(request.address());
+        customer.setState(request.state());
+        customer.setPincode(request.pincode());
 
         customer = customerRepository.save(customer);
 
@@ -201,7 +201,7 @@ public class CheckoutApiController {
         order.setStatus(OrderStatus.PENDING);
         order.setPaymentStatus(PaymentStatus.PENDING);
 
-        orderService.calculateCharges(order, cartService.getItems(), request.getState());
+        orderService.calculateCharges(order, cartService.getItems(), request.state());
 
         for (var cartItem : cartService.getItems()) {
             var item = new com.lalitha.sweets.model.OrderItem();
