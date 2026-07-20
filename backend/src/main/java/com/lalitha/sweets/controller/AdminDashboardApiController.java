@@ -2,23 +2,25 @@ package com.lalitha.sweets.controller;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import org.springframework.web.bind.annotation.*;
 
 import com.lalitha.sweets.dto.DashboardStatsDto;
+import com.lalitha.sweets.model.OrderStatus;
+import com.lalitha.sweets.repository.OrderItemRepository;
 import com.lalitha.sweets.repository.OrderRepository;
-import com.lalitha.sweets.service.AdminDashboardService;
 
 @RestController
 @RequestMapping("/api/admin/dashboard")
 public class AdminDashboardApiController {
 
-	private final AdminDashboardService dashboardService;
 	private final OrderRepository orderRepository;
+	private final OrderItemRepository orderItemRepository;
 
-	public AdminDashboardApiController(AdminDashboardService dashboardService, OrderRepository orderRepository) {
-		this.dashboardService = dashboardService;
+	public AdminDashboardApiController(OrderRepository orderRepository, OrderItemRepository orderItemRepository) {
 		this.orderRepository = orderRepository;
+		this.orderItemRepository = orderItemRepository;
 	}
 
 	@GetMapping
@@ -26,14 +28,14 @@ public class AdminDashboardApiController {
 
 		DashboardStatsDto dto = new DashboardStatsDto();
 
-		dto.setTotalOrders(dashboardService.getTotalOrders());
-		dto.setTotalRevenue(nullToZero(dashboardService.getTotalRevenue()));
-		dto.setPendingOrders(dashboardService.getPendingOrders());
-		dto.setTodayOrders(dashboardService.getTodayOrders());
-		dto.setTodayRevenue(nullToZero(dashboardService.getTodayRevenue()));
+		dto.setTotalOrders(orderRepository.countTotalOrders());
+		dto.setTotalRevenue(Objects.requireNonNullElse(orderRepository.totalRevenue(), 0d));
+		dto.setPendingOrders(orderRepository.countByStatus(OrderStatus.PLACED));
+		dto.setTodayOrders(orderRepository.countTodayOrders());
+		dto.setTodayRevenue(Objects.requireNonNullElse(orderRepository.todayRevenue(), 0d));
 
 		int[] monthlyData = new int[12];
-		for (Object[] row : orderRepository.getMonthlyOrders()) {
+		for (Object[] row : orderRepository.monthlyOrders()) {
 			int month = (int) row[0];
 			int count = ((Long) row[1]).intValue();
 			monthlyData[month - 1] = count;
@@ -41,15 +43,11 @@ public class AdminDashboardApiController {
 		dto.setMonthlyOrders(monthlyData);
 
 		List<DashboardStatsDto.TopProduct> topProducts = new ArrayList<>();
-		for (Object[] row : dashboardService.getTopSellingProducts()) {
+		for (Object[] row : orderItemRepository.getTopSellingProducts()) {
 			topProducts.add(new DashboardStatsDto.TopProduct((String) row[0], (Long) row[1]));
 		}
 		dto.setTopProducts(topProducts);
 
 		return dto;
-	}
-
-	private double nullToZero(Double value) {
-		return value == null ? 0d : value;
 	}
 }
