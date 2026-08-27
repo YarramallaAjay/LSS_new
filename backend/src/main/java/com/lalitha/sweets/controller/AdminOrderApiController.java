@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -19,6 +20,7 @@ import com.lalitha.sweets.repository.OrderRepository;
 import com.lalitha.sweets.repository.OrderStatusHistoryRepository;
 import com.lalitha.sweets.service.EmailService;
 import com.lalitha.sweets.service.OrderService;
+import com.lalitha.sweets.service.SmsService;
 import com.lalitha.sweets.service.WhatsAppService;
 
 /**
@@ -34,19 +36,25 @@ public class AdminOrderApiController {
 	private final EmailService emailService;
 	private final OrderStatusHistoryRepository historyRepository;
 	private final WhatsAppService whatsAppService;
+	private final SmsService smsService;
+
+	@Value("${app.frontend.base-url}")
+	private String frontendBaseUrl;
 
 	public AdminOrderApiController(
 			OrderRepository orderRepository,
 			OrderService orderService,
 			EmailService emailService,
 			OrderStatusHistoryRepository historyRepository,
-			WhatsAppService whatsAppService) {
+			WhatsAppService whatsAppService,
+			SmsService smsService) {
 
 		this.orderRepository = orderRepository;
 		this.orderService = orderService;
 		this.emailService = emailService;
 		this.historyRepository = historyRepository;
 		this.whatsAppService = whatsAppService;
+		this.smsService = smsService;
 	}
 
 	@GetMapping
@@ -118,12 +126,27 @@ public class AdminOrderApiController {
 
 	private void notifyCustomer(Order order, OrderStatus status) {
 
-		String phone = order.getCustomer() != null ? order.getCustomer().getPhone() : order.getCustomerPhoneSnapshot();
-		String message = statusMessage(order, status);
+		// Always prefer the snapshot taken at checkout time. order.getCustomer()
+		// is a live FK to a Customer row that can be shared/reused across
+		// multiple checkouts under the same email (see CheckoutApiController's
+		// findByEmail-or-create logic), so its phone can have since been
+		// overwritten by a *later* order. The snapshot is what this specific
+		// order's customer actually was at the time it was placed.
+		String phone = order.getCustomerPhoneSnapshot() != null
+				? order.getCustomerPhoneSnapshot()
+				: (order.getCustomer() != null ? order.getCustomer().getPhone() : null);
 
-		if (message != null && !message.isEmpty() && phone != null) {
-			whatsAppService.sendWhatsApp(phone, message);
+		if (phone == null) {
+			return;
 		}
+
+		// SMS is the interim customer-facing channel while the official
+		// WhatsApp Business API application (Meta verification + template
+		// approval) is pending. whatsAppService is left wired but unused
+		// below - swap the two lines back once Meta approval comes through.
+		String trackUrl = frontendBaseUrl + "/track/" + order.getId();
+		smsService.sendOrderStatusSms(order, status, phone, trackUrl);
+		// whatsAppService.sendWhatsApp(phone, statusMessage(order, status));
 	}
 
 	private String statusMessage(Order order, OrderStatus status) {

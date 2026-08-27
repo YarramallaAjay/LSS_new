@@ -33,6 +33,7 @@ import com.lalitha.sweets.service.EmailService;
 import com.lalitha.sweets.service.InvoiceService;
 import com.lalitha.sweets.service.OrderService;
 import com.lalitha.sweets.service.PaymentService;
+import com.lalitha.sweets.service.SmsService;
 import com.lalitha.sweets.service.WhatsAppService;
 import com.razorpay.Utils;
 
@@ -63,6 +64,9 @@ public class CheckoutApiController {
 
     @Autowired
     private WhatsAppService whatsAppService;
+
+    @Autowired
+    private SmsService smsService;
 
     @Autowired
     private OrderStatusHistoryRepository historyRepository;
@@ -290,16 +294,22 @@ public class CheckoutApiController {
                 invoicePdf
         );
 
-        whatsAppService.sendWhatsApp(
-                order.getCustomerPhoneSnapshot(),
-                "🎉 *Payment Successful!*\n\n" +
-                "Hi " + order.getCustomerNameSnapshot() + ",\n\n" +
-                "Your payment was successful and your order is Placed.\n\n" +
-                "🧾 *Order ID:* #" + order.getId() + "\n" +
-                "💰 *Amount:* ₹" + order.getTotalAmount() + "\n\n" +
-                "📍 *Address:*\n" + order.getAddress() + "\n\n" +
-                "🔎 Track Order:\n" + trackUrl
-        );
+        // SMS is the interim customer-facing channel while the official
+        // WhatsApp Business API application (Meta verification + template
+        // approval) is pending. Swap this back to whatsAppService.sendWhatsApp
+        // once Meta approval comes through - the commented call below shows
+        // the equivalent message.
+        smsService.sendOrderStatusSms(order, OrderStatus.PLACED, order.getCustomerPhoneSnapshot(), trackUrl);
+        // whatsAppService.sendWhatsApp(
+        //         order.getCustomerPhoneSnapshot(),
+        //         "🎉 *Payment Successful!*\n\n" +
+        //         "Hi " + order.getCustomerNameSnapshot() + ",\n\n" +
+        //         "Your payment was successful and your order is Placed.\n\n" +
+        //         "🧾 *Order ID:* #" + order.getId() + "\n" +
+        //         "💰 *Amount:* ₹" + order.getTotalAmount() + "\n\n" +
+        //         "📍 *Address:*\n" + order.getAddress() + "\n\n" +
+        //         "🔎 Track Order:\n" + trackUrl
+        // );
 
         whatsAppService.sendWhatsApp(
                 adminNumber,
