@@ -6,7 +6,7 @@ decoupled architecture:
 - **`frontend/`** — a React 18 + Vite single-page app (storefront + admin panel), talking to the
   backend over a JSON REST API.
 - **`backend/`** — the original Spring Boot app, converted from server-rendered Thymeleaf views
-  into a pure REST API (`/api/**`), backed by the same MySQL schema.
+  into a pure REST API (`/api/**`), backed by a PostgreSQL schema.
 
 ## What changed from the original repo
 
@@ -44,7 +44,7 @@ can still see them. Before making this repository public or sharing it further, 
    [myaccount.google.com/apppasswords](https://myaccount.google.com/apppasswords) and revoke the
    old one).
 2. **Rotate the Razorpay key/secret** that were hardcoded (regenerate in the Razorpay dashboard).
-3. **Change the MySQL root/app password** if the same one is still in use anywhere.
+3. **Change the database root/app password** if the same one is still in use anywhere.
 4. **Change the admin panel password** — the original app seeded a hardcoded `admin123` password
    on first run. The new `DataInitializer` either uses `ADMIN_DEFAULT_PASSWORD` from your `.env`
    or generates a random one and logs it once at startup; either way, log in and change it (or
@@ -59,7 +59,7 @@ as compromised regardless of whether anyone is known to have used them.
 
 - Java 17+, Maven 3.9+ (or use the Docker setup and skip installing these locally)
 - Node.js 20+, npm (or Docker)
-- MySQL 8 (or Docker)
+- PostgreSQL 16 (or Docker)
 - A Razorpay account (test keys are fine for development)
 - A Gmail account with an App Password (or any SMTP provider) for order-confirmation emails
 - Optional: a local WhatsApp gateway (e.g. a `whatsapp-web.js` bridge) listening on
@@ -77,7 +77,7 @@ docker compose up --build
 
 - Frontend: http://localhost:5173
 - Backend API: http://localhost:8080/api
-- MySQL: localhost:3306
+- PostgreSQL: localhost:5432
 
 Compose builds the backend jar and the frontend static bundle from source, so there's no need to
 run Maven or npm on your host machine for this path.

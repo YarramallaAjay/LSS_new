@@ -108,7 +108,8 @@ public class SecurityConfig {
 							"/api/checkout/**",
 							"/api/track/**",
 							"/api/orders/**",
-							"/api/admin/auth/login"
+							"/api/admin/auth/login",
+							"/actuator/health"
 					).permitAll()
 
 					.requestMatchers("/api/admin/**").hasRole("ADMIN")
