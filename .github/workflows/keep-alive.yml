@@ -1,0 +1,17 @@
+name: Keep backend warm
+
+# Render's free tier spins the backend down after ~15 min idle, causing a
+# 50-160s cold start on the next real request. Pinging health every 10 min
+# keeps it warm so actual site visitors never eat that delay. Public-repo
+# GitHub Actions minutes are unlimited, so this costs nothing.
+on:
+  schedule:
+    - cron: "*/10 * * * *"
+  workflow_dispatch: {}
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ping backend health endpoint
+        run: curl -sS -m 60 -o /dev/null -w "status: %{http_code}\n" https://lalitha-sweets-backend.onrender.com/actuator/health
